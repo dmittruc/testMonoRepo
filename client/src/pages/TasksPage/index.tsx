@@ -3,6 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import useTasks from '../../hooks/useTasks';
 import TaskList from '../../components/TaskList';
 import {TStatusTask} from '../../interfaces';
+import './style.css';
 
 const TasksPage = () => {
   const {tasks, loading, error, fetchTasks} = useTasks();

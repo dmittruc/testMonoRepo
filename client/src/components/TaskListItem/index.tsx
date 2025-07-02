@@ -2,6 +2,7 @@ import {useCallback, useState} from 'react';
 import useTasks from '../../hooks/useTasks';
 import {ITask} from '../../interfaces';
 import {useNavigate} from 'react-router-dom';
+import './style.css';
 
 interface IProps {
   task: ITask;
@@ -35,7 +36,7 @@ const TaskListItem = ({task}: IProps) => {
   }, [task]);
 
   return (
-    <div>
+    <div className="task-container">
       <button onClick={goToTaskEditor}>Edit</button>
       <button onClick={handleDeleteTask}>Delete</button>
       <div>
