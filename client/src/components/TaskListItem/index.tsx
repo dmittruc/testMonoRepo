@@ -1,4 +1,4 @@
-import {useCallback} from 'react';
+import {useCallback, useState} from 'react';
 import useTasks from '../../hooks/useTasks';
 import {ITask} from '../../interfaces';
 import {useNavigate} from 'react-router-dom';
@@ -10,25 +10,42 @@ interface IProps {
 const TaskListItem = ({task}: IProps) => {
   const navigate = useNavigate();
 
-  const {deleteTask} = useTasks();
+  const {deleteTask, updateTask} = useTasks();
 
   const onSuccess = () => {
-    console.log('delete task', task.id);
+    console.log('delete task', task.taskId);
   };
 
   const handleDeleteTask = useCallback(() => {
-    deleteTask(task.id, onSuccess);
+    deleteTask(task.taskId, onSuccess);
   }, [task]);
 
   const goToTaskEditor = useCallback(() => {
-    navigate(`tasks/edit/${task.id}`);
+    navigate(`/edit/${task.taskId}`);
   }, []);
+
+  const handleToggleCompleted = useCallback(() => {
+    updateTask(
+      task.taskId,
+      task.title,
+      task.description,
+      onSuccess,
+      !task.completed,
+    );
+  }, [task]);
 
   return (
     <div>
       <button onClick={goToTaskEditor}>Edit</button>
       <button onClick={handleDeleteTask}>Delete</button>
-      <p>Task title: {task.title}</p>
+      <div>
+        <span>Task title: {task.title}</span>
+        <input
+          type="checkbox"
+          checked={task.completed}
+          onChange={handleToggleCompleted}
+        />
+      </div>
       <p>Task description: {task.description}</p>
     </div>
   );

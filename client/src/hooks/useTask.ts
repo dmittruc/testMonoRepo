@@ -24,7 +24,7 @@ const useTask = (taskId: string | undefined) => {
 
   useEffect(() => {
     fetchCurrentTask();
-  }, [task]);
+  }, [taskId]);
 
   return {loading, error, task};
 };

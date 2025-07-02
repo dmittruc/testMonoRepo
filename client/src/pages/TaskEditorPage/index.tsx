@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import useTasks from '../../hooks/useTasks';
 import useTask from '../../hooks/useTask';
@@ -7,10 +7,17 @@ interface IProps {
   taskId: number;
   currentTitle: string;
   currentDescription: string;
+  currentCompleted: boolean;
 }
-const TaskEditorPage = ({taskId, currentTitle, currentDescription}: IProps) => {
+const TaskEditorPage = ({
+  taskId,
+  currentTitle,
+  currentDescription,
+  currentCompleted,
+}: IProps) => {
   const [title, setTitle] = useState<string>(currentTitle);
   const [description, setDescription] = useState<string>(currentDescription);
+  const [completed, setCompleted] = useState<boolean>(currentCompleted);
 
   const {updateTask} = useTasks();
   const navigate = useNavigate();
@@ -19,8 +26,12 @@ const TaskEditorPage = ({taskId, currentTitle, currentDescription}: IProps) => {
     navigate(`/`);
   };
 
+  const handleToggle = useCallback(() => {
+    setCompleted(prev => !prev);
+  }, []);
+
   const handleUpdateTask = () => {
-    updateTask(taskId, currentTitle, currentDescription, onSuccess);
+    updateTask(taskId, title, description, onSuccess, completed);
   };
 
   return (
@@ -38,6 +49,7 @@ const TaskEditorPage = ({taskId, currentTitle, currentDescription}: IProps) => {
             setDescription(e.target.value);
           }}
         />
+        <input type="checkbox" checked={completed} onChange={handleToggle} />
       </div>
       <div>
         <button onClick={handleUpdateTask}>Update task</button>
@@ -64,6 +76,7 @@ const TaskEditorPageWrapper = () => {
       taskId={parseInt(taskId!)}
       currentTitle={task.title}
       currentDescription={task.description}
+      currentCompleted={task.completed}
     />
   );
 };

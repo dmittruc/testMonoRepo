@@ -11,7 +11,7 @@ import {
 import {ITask} from '../../interfaces';
 
 const initialState: ITasksReducerState = {
-  tasks: [{id: 1, title: '1234', description: '1234'}],
+  tasks: [],
   loading: false,
   error: undefined,
 };
@@ -33,7 +33,7 @@ const tasksReducer = createReducer<ITasksReducerState>(initialState, builder =>
     .addCase(deleteTasksAction, (store, {payload: {task}}) => ({
       ...store,
       tasks: store.tasks.filter(
-        (currentTask: ITask) => currentTask.id !== task.id,
+        (currentTask: ITask) => currentTask.taskId !== task.taskId,
       ),
     }))
     .addCase(addTasksAction, (store, {payload: {task}}) => ({
@@ -43,7 +43,7 @@ const tasksReducer = createReducer<ITasksReducerState>(initialState, builder =>
     .addCase(updateTasksAction, (store, {payload: {task}}) => ({
       ...store,
       tasks: store.tasks.map((currentTask: ITask) =>
-        currentTask.id === task.id ? task : currentTask,
+        currentTask.taskId === task.taskId ? task : currentTask,
       ),
     })),
 );

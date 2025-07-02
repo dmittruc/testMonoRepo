@@ -19,7 +19,7 @@ const TaskList = ({tasks, loading, error}: IProps) => {
     <>
       {tasks.map((task: ITask) => {
         return (
-          <div key={task.id}>
+          <div key={task.taskId}>
             <TaskListItem task={task} />
           </div>
         );

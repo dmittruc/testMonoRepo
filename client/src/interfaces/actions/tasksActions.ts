@@ -1,4 +1,4 @@
-import {ITask} from '..';
+import {ITask, TStatusTask} from '..';
 
 export interface ISetLoadingAction {
   loading: boolean;
@@ -22,12 +22,14 @@ export interface IUpdateTasksAction {
 
 export interface IDeleteTasksAction {
   task: ITask;
+  filter?: TStatusTask;
 }
 
 export interface ICreateTasksAsyncAction {
   title: string;
   description: string;
   onSuccess?: () => void;
+  filter?: TStatusTask;
 }
 
 export interface IUpdateTasksAsyncAction {
@@ -35,9 +37,12 @@ export interface IUpdateTasksAsyncAction {
   title: string;
   description: string;
   onSuccess?: () => void;
+  filter?: TStatusTask;
+  completed: boolean;
 }
 
 export interface IDeleteTasksAsyncAction {
   taskId: number;
   onSuccess?: () => void;
+  filter?: TStatusTask;
 }

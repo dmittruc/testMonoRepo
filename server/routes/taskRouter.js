@@ -1,7 +1,7 @@
 /** @format */
 
 const { Router } = require("express");
-const TaskController = require("../controllers/taskController");
+const TaskController = require("../controllers/TaskController");
 
 const router = new Router({ mergeParams: true });
 

@@ -2,21 +2,16 @@
 
 const Task = require("../models/models");
 
-async function formTask(taskId) {
-  const task = await Task.findOne({ where: { taskId: taskId } });
-  let formedTask = { ...task.dataValues };
-  return {
-    ...formedTask,
-  };
-}
-
 class TaskService {
-  async getTasks() {
-    const tasks = await Task.findAll();
-    const formedTask = await Promise.all(
-      tasks.map((task) => formTask(task.taskId))
-    );
-    return formedTask;
+  async getTasks(filter = "all") {
+    let where = {};
+    if (filter === "active") {
+      where.completed = false;
+    } else if (filter === "completed") {
+      where.completed = true;
+    }
+    const tasks = await Task.findAll({ where });
+    return tasks;
   }
   async getTask(taskId) {
     const task = await Task.findOne({ where: { taskId: taskId } });
@@ -26,12 +21,15 @@ class TaskService {
     const task = await Task.create({ title, description });
     return task;
   }
-  async updateTask(taskId, title, description) {
+  async updateTask(taskId, title, description, completed) {
     const task = await Task.findOne({ where: { taskId: taskId } });
     if (!task) {
       console.log("updateTask: Task was not found");
     }
-    await Task.update({ title, description }, { where: { taskId: taskId } });
+    await Task.update(
+      { title, description, completed },
+      { where: { taskId: taskId } }
+    );
     return await Task.findOne({ where: { taskId: taskId } });
   }
   async deleteTask(taskId) {

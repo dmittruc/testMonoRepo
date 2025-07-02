@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from 'react-redux';
-import {ITask} from '../interfaces';
+import {ITask, TStatusTask} from '../interfaces';
 import {TAppDispatch, TRootState} from '../store';
 import {
   createTasksAsyncAction,
@@ -22,8 +22,8 @@ const useTasks = () => {
     (state: TRootState) => state.tasks.error,
   );
 
-  const fetchTasks = useCallback(() => {
-    dispatch(tasksAsyncAction());
+  const fetchTasks = useCallback((filter: TStatusTask = 'all') => {
+    dispatch(tasksAsyncAction({filter}));
   }, []);
 
   const createTask = useCallback(
@@ -39,8 +39,17 @@ const useTasks = () => {
       title: string,
       description: string,
       onSuccess: () => void,
+      completed: boolean,
     ) => {
-      dispatch(updateTasksAsyncAction({taskId, title, description, onSuccess}));
+      dispatch(
+        updateTasksAsyncAction({
+          taskId,
+          title,
+          description,
+          onSuccess,
+          completed,
+        }),
+      );
     },
     [],
   );

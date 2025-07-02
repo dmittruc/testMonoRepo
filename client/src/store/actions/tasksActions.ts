@@ -15,6 +15,7 @@ import {
   IUpdateTasksAction,
   IUpdateTasksAsyncAction,
 } from '../../interfaces/actions/tasksActions';
+import {TStatusTask} from '../../interfaces';
 
 export const setLoadingAction = createAction<ISetLoadingAction>(
   'tasks/setLoadingAction',
@@ -40,12 +41,12 @@ export const setErrorAction = createAction<ISetErrorAction>(
   'tasks/setErrorAction',
 );
 
-export const tasksAsyncAction = createAsyncThunk(
+export const tasksAsyncAction = createAsyncThunk<void, {filter?: TStatusTask}>(
   'tasks/tasksAsyncAction',
-  async (_, {dispatch}) => {
+  async ({filter = 'all'}, {dispatch}) => {
     try {
       dispatch(setLoadingAction({loading: true}));
-      const res = await fetchTasksApi();
+      const res = await fetchTasksApi(filter);
       const tasks = res.tasks;
       dispatch(setTasksAction({tasks: tasks}));
       dispatch(setErrorAction({error: undefined}));
@@ -63,11 +64,11 @@ export const deleteTasksAsyncAction = createAsyncThunk<
   IDeleteTasksAsyncAction
 >(
   'tasks/deleteTasksAsyncAction',
-  async ({taskId, onSuccess}: IDeleteTasksAsyncAction, {dispatch}) => {
+  async ({taskId, onSuccess, filter}: IDeleteTasksAsyncAction, {dispatch}) => {
     try {
       dispatch(setLoadingAction({loading: true}));
       const res = await deleteTasksApi(taskId);
-      dispatch(tasksAsyncAction());
+      dispatch(tasksAsyncAction({filter}));
       if (onSuccess) {
         onSuccess();
       }
@@ -85,13 +86,20 @@ export const updateTasksAsyncAction = createAsyncThunk<
 >(
   'tasks/updateTasksAsyncAction',
   async (
-    {taskId, title, description, onSuccess}: IUpdateTasksAsyncAction,
+    {
+      taskId,
+      title,
+      description,
+      onSuccess,
+      filter,
+      completed,
+    }: IUpdateTasksAsyncAction,
     {dispatch},
   ) => {
     try {
       dispatch(setLoadingAction({loading: true}));
-      const res = await updateTasksApi(taskId, title, description);
-      dispatch(tasksAsyncAction());
+      const res = await updateTasksApi(taskId, title, description, completed);
+      dispatch(tasksAsyncAction({filter}));
       if (onSuccess) {
         onSuccess();
       }
@@ -109,13 +117,13 @@ export const createTasksAsyncAction = createAsyncThunk<
 >(
   'tasks/createTasksAsyncAction',
   async (
-    {title, description, onSuccess}: ICreateTasksAsyncAction,
+    {title, description, onSuccess, filter}: ICreateTasksAsyncAction,
     {getState, dispatch},
   ) => {
     try {
       dispatch(setLoadingAction({loading: true}));
       const res = await createTasksApi(title, description);
-      dispatch(tasksAsyncAction());
+      dispatch(tasksAsyncAction({filter}));
       if (onSuccess) {
         onSuccess();
       }
